@@ -10,16 +10,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
-SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
-
-
-# Function to send message to Slack
-def send_to_slack(message):
-    payload = {'text': message}
-    response = requests.post(SLACK_WEBHOOK_URL, json=payload)
-    if response.status_code != 200:
-        raise ValueError(f"Request to Slack returned an error {response.status_code}, the response is:\n{response.text}")
-
 chrome_driver_path = '/usr/local/bin/chromedriver'
 
 chrome_options = Options()
@@ -60,77 +50,76 @@ with col3:
 
 
 keywords = [
-    "laptop", "headphones", "smartphone", "kitchen", "shoes",
-    "vacuum", "bottle", "backpack", "tracker", "coffee",
-    "tshirt", "smartwatch", "mouse", "speaker", "yoga",
-    "chair", "camera", "tablet", "watch",
-    "case", "drone", "drill", "console", "lights",
-    "brush", "fryer", "tools", "bicycle", "pillow",
-    "sheets", "blanket", "utensils", "sneakers", "pets",
-    "office", "gun", "dryer", "sunglasses", "skincare",
-    "dinnerware", "notebook", "pens", "monitor", "TV",
-    "router", "gaming", "bank", "earbuds", "paints",
-    "supplies", "toys", "scale", "grill", "jacket",
-    "candles", "frame", "socks", "mask", "glasses",
-    "monitor", "charger", "camera", "sheet", "tools",
-    "gear", "accessories", "clothing", "food", "furniture",
-    "storage", "mugs", "blankets", "cutlery", "crafts",
-    "art", "gloves", "shoes", "garden", "hiking",
-    "sports", "bike", "camping", "craft", "fishing",
-    "water", "tools", "cleaning", "fans", "heaters",
-    "lighting", "safety", "storage", "bins", "bags",
-    "decor", "dishes", "baking", "meal", "snacks",
-    "sauces", "spices", "fitness", "nutrition",
-    "supplements", "games", "outdoor", "toys", "activities",
-    "baking", "exercise", "adventure", "party", "holiday",
-    "family", "kitchen", "clothing", "health",
-    "pets", "dining", "cooking", "tools", "appliances",
-    "safety", "games", "toys", "yarn", "plants",
-    "products", "kits", "drinks", "accessories", "baking",
-    "hobbies", "wellness", "home", "season", "festival",
-    "tools", "pets", "cleaning", "baby", "toys",
-    "games", "health", "wellness", "sports", "travel",
-    "home", "kitchen", "furniture", "decor", "clothes",
-    "toiletries", "electronics", "school", "hobbies", "gifts",
+    "fashion accessory item", "fun group activity", "exciting outdoor trip", "home kitchen tool", "creative wall decor",
+"newborn care gear", "school travel bag", "carry-on travel gear", "bakeware and utensils", "financial savings tool",
+"two-wheel road transport", "mountain ride gear", "storage organization box", "soft bed cover", "cozy bed throw",
+"hydration travel container", "personal care brush", "digital photo device", "outdoor shelter gear", "aromatic wax light",
+"phone safety case", "ergonomic sitting chair", "portable power supply", "household sanitation product", "casual fashion wear",
+"everyday wear clothing", "hot beverage maker", "video gaming device", "food preparation gear", "DIY craft supplies",
+"handmade art projects", "cutting eating tools", "home interior accents", "table meal setup", "ceramic plate set",
+"kitchen hole cutter", "flavored cold beverages", "aerial filming robot", "small stereo earbuds", "home tech devices",
+"home workout routine", "air cooling fans", "relatives bonding time", "holiday event celebration", "water sport hobby",
+"personal health training", "daily meal food", "photo display frame", "oil-free cook machine", "indoor seating unit",
+"fun leisure activity", "outdoor green area", "multiplayer online platform", "travel hiking supplies", "gift wrapping supplies",
+"holiday surprise gift", "sunlight vision wear", "warm handwear accessory", "charcoal barbecue grill", "personal safety tool",
+"creative pastimes activity", "seasonal festive gift", "body health supplies", "home heating device", "nature trail gear",
+"indoor living space", "winter clothing gear", "cooking preparation space", "educational build kits", "portable computer device",
+"ambient string lights", "room lamp fixture", "protective face mask", "cooked food portion", "computer display screen",
+"handheld control device", "hot drink container", "school writing pad", "balanced food intake", "corporate workspace furniture",
+"camping outdoor gear", "art painting tools", "event party decor", "ballpoint ink pens", "domestic animal care",
+"bedtime neck support", "green home decoration", "consumer retail goods", "internet modem router", "protective home equipment",
+"cooking condiment bottles", "body weight checker", "education learning tools", "changing seasonal theme", "bedding sleep linen",
+"cozy sleep blankets", "footwear fashion shoes", "facial care products", "mobile cell device", "digital fitness watch",
+"athletic sports sneakers", "tasty food snacks", "comfortable foot socks", "portable sound speaker", "kitchen flavor spices",
+"team physical games", "closet storage drawers", "art supply materials", "UV blocking shades", "diet health pills",
+"media play tablet", "personal wash items", "hand repair tools", "kids play objects", "activity fitness tracker",
+"airline weekend travel", "graphic print tshirt", "entertainment smart TV", "eating steel utensils", "floor cleaning vacuum",
+"wrist timepiece watch", "clean bottled water", "mental health wellness", "knitting fiber yarn", "indoor yoga mat",
     
-    "wireless headphones", "gaming laptop", "outdoor chair", "exercise bike", "fitness tracker",
-    "phone case", "smart TV", "kitchen knife", "sleep mask", "luggage set",
-    "computer monitor", "smart speaker", "coffee maker", "air fryer", "robot vacuum",
-    "baking sheet", "bento box", "garden tools", "travel mug", "water bottle",
-    "wireless charger", "cordless drill", "gaming console", "printer paper", "craft supplies",
-    "garden furniture", "laptop stand", "yoga mat", "dog leash", "pet carrier",
-    "office chair", "desk organizer", "memory foam pillow", "weight set", "workout clothes",
-    "skincare kit", "hair dryer", "makeup organizer", "juicer", "bread maker",
-    "food storage", "camping gear", "outdoor grill", "picnic basket", "cooler bag",
-    "gardening gloves", "sewing machine", "knitting kit", "art supplies", "easel",
-    "puzzle", "board games", "toy car", "action figure", "stuffed animal",
-    "dollhouse", "play kitchen", "building blocks", "science kit", "robot kit",
-    "remote control car", "musical instrument", "play tent", "trampoline", "skateboard",
-    "bicycle helmet", "scooter", "hockey stick", "soccer ball", "basketball",
-    "football", "golf clubs", "tennis racket", "yoga blocks", "exercise ball",
-    "weights", "jump rope", "fitness DVDs", "fishing rod", "hiking boots",
-    "water shoes", "swimming gear", "ski equipment", "rock climbing gear", "surfboard",
-    "paddleboard", "camping tent", "sleeping bag", "outdoor lantern", "flashlight",
-    "fire pit", "grilling tools", "cooler", "camping chair", "fishing tackle",
-    "first aid kit", "emergency blanket", "travel guide", "road map", "car charger",
-    "portable battery", "GPS device", "dash cam", "vehicle emergency kit", "roof rack",
-    "bike lock", "car maintenance tools", "oil filter", "tire inflator", "jump starter",
-    "car cleaning supplies", "detailing kit", "interior cleaner", "headlight restoration", "floor mats",
-    "seat covers", "sunshade", "trunk organizer", "cargo net", "pet barrier",
-    "pet grooming tools", "dog food", "cat litter", "fish tank", "bird feeder",
-    "small animal habitat", "pet toys", "aquarium supplies", "pet health products", "pet training",
-    "health supplements", "vitamins", "protein powder", "meal replacement", "energy bars",
-    "weight loss products", "immune support", "digestive health", "joint health", "herbal tea",
-    "essential oils", "aromatherapy diffuser", "skin care", "moisturizer", "sunblock",
-    "anti-aging cream", "hair care", "shampoo", "conditioner", "hair treatment",
-    "nail care", "manicure set", "foot care", "body scrub", "bath bombs",
+  "wireless audio headphones", "gaming high-performance laptop", "outdoor foldable chair", 
+    "indoor exercise bike", "advanced fitness tracker", "phone protection case", "4K smart TV", 
+    "kitchen chef knife", "comfortable sleep mask", "travel luggage set", "HD computer monitor", 
+    "voice activated speaker", "coffee brewing maker", "compact air fryer", "robot vacuum cleaner", 
+    "nonstick baking sheet", "portable bento box", "gardening hand tools", "insulated travel mug", 
+    "reusable water bottle", "wireless charging pad", "cordless power drill", "modern gaming console", 
+    "premium printer paper", "crafting hobby supplies", "outdoor garden furniture", "adjustable laptop stand", 
+    "soft yoga mat", "durable dog leash", "travel pet carrier", "ergonomic office chair", "desk storage organizer", 
+    "memory foam pillow", "adjustable weight set", "athletic workout clothes", "luxury skincare kit", 
+    "professional hair dryer", "makeup cosmetic organizer", "high-speed juicer", "automatic bread maker", 
+    "airtight food storage", "essential camping gear", "portable outdoor grill", "wicker picnic basket", 
+    "insulated cooler bag", "protective gardening gloves", "sewing machine kit", "beginner knitting kit", 
+    "essential art supplies", "wooden artist easel", "challenging jigsaw puzzle", "family board games", 
+    "toy car replica", "action figure set", "plush stuffed animal", "mini dollhouse set", "toy play kitchen", 
+    "educational building blocks", "science experiment kit", "robot building kit", "remote control car", 
+    "musical instrument kit", "kids play tent", "outdoor trampoline fun", "adult skateboard deck", 
+    "safety bicycle helmet", "folding scooter ride", "hockey practice stick", "inflatable soccer ball", 
+    "regulation basketball hoop", "official football gear", "golf club set", "professional tennis racket", 
+    "balance yoga blocks", "inflatable exercise ball", "adjustable dumbbell weights", "jump rope workout", 
+    "fitness DVD collection", "lightweight fishing rod", "durable hiking boots", "waterproof water shoes", 
+    "comfortable swimming gear", "high-performance ski equipment", "climbing rock gear", "surfboard riding board", 
+    "paddleboard accessory kit", "compact camping tent", "warm sleeping bag", "LED outdoor lantern", 
+    "handheld flashlight tool", "portable fire pit", "grilling barbecue tools", "camping cooler bag", 
+    "foldable camping chair", "professional fishing tackle", "first aid kit", "emergency thermal blanket", 
+    "travel adventure guide", "folding road map", "vehicle USB charger", "portable battery pack", "GPS navigation device", 
+    "car dash cam", "vehicle emergency kit", "roof rack carrier", "bike lock security", "basic car maintenance tools", 
+    "oil change filter", "emergency tire inflator", "compact jump starter", "car detailing supplies", "professional detailing kit", 
+    "vehicle interior cleaner", "headlight restoration kit", "floor mat protector", "comfortable seat covers", 
+    "car window sunshade", "trunk storage organizer", "secure cargo net", "dog pet barrier", "pet grooming tools", 
+    "nutritious dog food", "odorless cat litter", "aquarium fish tank", "automatic bird feeder", "small animal habitat", 
+    "interactive pet toys", "aquarium cleaning supplies", "pet health products", "basic pet training", "health supplements", 
+    "muscle vitamins pack", "protein powder supplement", "meal replacement shake", "energy protein bars", "weight loss plan", 
+    "immune system support", "digestive health probiotics", "joint health supplements", "organic herbal tea", 
+    "aromatherapy essential oils", "relaxing diffuser kit", "luxury skin care", "hydrating moisturizer", 
+    "protective sunblock lotion", "anti-aging cream", "natural hair care", "shampoo conditioner set", 
+    "restorative hair treatment", "nail care kit", "manicure pedicure set", "foot care tools", "gentle body scrub", 
+    "luxury bath bombs", "relaxing makeup remover",
     "makeup", "foundation", "lipstick", "eye shadow", "blush",
     "eyeliner", "mascara", "makeup brushes", "hair styling tools", "hair accessories",
     "beauty tools", "facial masks", "peel pads", "self-tanner", "waxing kit",
     "tanning lotion", "toiletries", "shaving kit", "razors", "deodorant",
     "body wash", "hand soap", "toilet paper", "paper towels", "laundry detergent",
     "dish soap", "cleaning supplies", "broom", "mop", "bucket",
-    "vacuum bags", "air fresheners", "candles", "scented oils", "incense",
+    "vacuum bags", "air fresheners", "scented oils", "incense",
     "charcoal", "grilling accessories", "cooking utensils", "measuring cups", "mixing bowls",
     "cutting board", "knife set", "food processor", "slow cooker", "rice cooker",
     "blender", "microwave", "toaster", "coffee grinder", "espresso machine",
@@ -263,62 +252,67 @@ def run_tests_nz(driver, selected_keywords):
         try:
             driver.get("https://www.u-buy.co.nz")
             driver.set_window_size(1366, 699)
-
             search_box = driver.find_element(By.CSS_SELECTOR, ".ds-input")
-            search_box.clear()
+            search_box.clear()  
             search_box.send_keys(product)
             start_time = time.time()
             search_box.send_keys(Keys.ENTER)
 
+
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .product-title"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1) .product-title"))
             )
+            #WebDriverWait(driver, 10).until(
+             #   EC.element_to_be_clickable((By.CSS_SELECTOR, ".col-lg-3:nth-child(3) .img-detail img"))
+            #).click()
+
             end_time = time.time()
             response_time_list = (end_time - start_time)
             list_page_times.append(response_time_list)
 
             st.write(f"Keyword: {product} - List Page Response time: {response_time_list * 1000:.2f} ms")
 
-            driver.find_element(By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .img-detail img").click()
+            
+            driver.find_element(By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1)").click()
+
 
             try:
                 WebDriverWait(driver, 20).until(
                     EC.any_of(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.in-stock")),
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.out-of-stock")),
                         EC.presence_of_element_located((By.CSS_SELECTOR, "#page-not-found")),
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.in-stock.ms-1")),
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.out-of-stock.ms-1"))
                     )
                 )
-
+                
                 end_time = time.time()
-                response_time_detail = (end_time - start_time - response_time_list) + 1
+                response_time_detail = (end_time - start_time - response_time_list)
                 detail_page_times.append(response_time_detail)
+                
 
                 if driver.find_elements(By.CSS_SELECTOR, "#availability-status.out-of-stock"):
                     st.write(f"Keyword: {product} - Product is out of stock")
-                    is_out_of_stock += 1
+                    is_out_of_stock +=1
+
+                elif driver.find_elements(By.CSS_SELECTOR, "#availability-status.out-of-stock.ms-1"):
+                    st.write(f"Keyword: {product} - Product is out of stock")
+                    is_out_of_stock +=1
 
                 elif driver.find_elements(By.CSS_SELECTOR, "#page-not-found"):
-                    st.write(f"Keyword: {product} - Product not found")
-                    not_found += 1
+                    st.write(f"Keyword: {product} - Product Not found")
+                    not_found +=1
 
-                st.write(f"Keyword: {product} - Product detail page response time: {response_time_detail * 1000:.2f} ms")
-
+                st.write(f"Keyword: {product} - Product detail page response time: {response_time_detail * 1500:.2f} ms")
             except:
                 st.write(f"Keyword: {product} - timeout.")
-
         except Exception as e:
             st.write(f"An error occurred for keyword '{product}': {e}")
-
         finally:
-            driver.get("https://www.u-buy.co.nz")
-            driver.set_window_size(1366, 699)
-
-
+           driver.get("https://www.u-buy.co.nz")
+           driver.set_window_size(1366, 699) 
 def run_tests_kw(driver, selected_keywords):
     global list_page_times, detail_page_times, not_found, is_out_of_stock
     domain = "(KW)"
-
     for product in selected_keywords:
         try:
             driver.get("https://www.a.ubuy.com.kw/en/")
@@ -332,8 +326,12 @@ def run_tests_kw(driver, selected_keywords):
 
 
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .product-title"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1) .product-title"))
             )
+            #WebDriverWait(driver, 10).until(
+             #   EC.element_to_be_clickable((By.CSS_SELECTOR, ".col-lg-3:nth-child(3) .img-detail img"))
+            #).click()
+
             end_time = time.time()
             response_time_list = (end_time - start_time)
             list_page_times.append(response_time_list)
@@ -341,7 +339,7 @@ def run_tests_kw(driver, selected_keywords):
             st.write(f"Keyword: {product} - List Page Response time: {response_time_list * 1000:.2f} ms")
 
             
-            driver.find_element(By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .img-detail img").click()
+            driver.find_element(By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1)").click()
 
     #Main (detail)
             try:
@@ -370,7 +368,7 @@ def run_tests_kw(driver, selected_keywords):
                     st.write(f"Keyword: {product} - Product Not found")
                     not_found +=1
 
-                st.write(f"Keyword: {product} - Product detail page response time: {response_time_detail * 1000:.2f} ms")
+                st.write(f"Keyword: {product} - Product detail page response time: {response_time_detail * 1500:.2f} ms")
 
             except:
                 st.write(f"Keyword: {product} - timeout.")
@@ -401,7 +399,7 @@ def run_tests_uae(driver, selected_keywords):
 
 
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .product-title"))
+               EC.presence_of_element_located((By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1) .product-title"))
             )
             end_time = time.time()
             response_time_list = (end_time - start_time)
@@ -410,7 +408,7 @@ def run_tests_uae(driver, selected_keywords):
             st.write(f"Keyword: {product} - List Page Response time: {response_time_list * 1000:.2f} ms")
 
             
-            driver.find_element(By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .img-detail img").click()
+            driver.find_element(By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1)").click()
 
     #Main (detail)
             try:
@@ -506,8 +504,6 @@ def main():
         
         st.write(summary)
         st.write(f"Not founds: {not_found}\n" f"Out of stocks: {is_out_of_stock}")
-
-        send_to_slack(summary)
 
 if __name__ == "__main__":
     main()

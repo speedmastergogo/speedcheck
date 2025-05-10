@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
 
@@ -233,66 +234,57 @@ for product in selected_keywords:
         driver.get("https://www.ubuy.ae/en/")
         driver.set_window_size(1366, 699)
 
-        search_box = driver.find_element(By.CSS_SELECTOR, ".ds-input")
-        search_box.clear()  
+        # Start search
+        search_box = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".ds-input"))
+        )
+        search_box.clear()
         search_box.send_keys(product)
         start_time = time.time()
         search_box.send_keys(Keys.ENTER)
 
-
+        # Wait for product results to load
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .product-title"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".product-box a"))
         )
-        end_time = time.time()
-        response_time_list = (end_time - start_time)
-        list_page_times.append(response_time_list)
+        list_time = time.time() - start_time
+        list_page_times.append(list_time)
+        print(f"Keyword: {product} - List Page Response Time: {list_time * 1000:.2f} ms")
 
-        print(f"Keyword: {product} - List Page Response time: {response_time_list * 1000:.2f} ms")
+        # Click the first product
+        products = driver.find_elements(By.CSS_SELECTOR, ".product-box a")
+        if not products:
+            print(f"No products found for keyword: {product}")
+            continue
+        products[0].click()
 
-        
-        driver.find_element(By.CSS_SELECTOR, ".col-lg-3:nth-child(4) .img-detail img").click()
-
-#Main (detail)
-        try:
-            WebDriverWait(driver, 20).until(
-                EC.any_of(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.in-stock")),
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.out-of-stock")),
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "#page-not-found")),
-                )
+        # Wait for product detail to load
+        WebDriverWait(driver, 20).until(
+            EC.any_of(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.in-stock")),
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.out-of-stock")),
+                EC.presence_of_element_located((By.CSS_SELECTOR, "#page-not-found")),
             )
-            
-            end_time = time.time()
-            response_time_detail = (end_time - start_time - response_time_list)
-            detail_page_times.append(response_time_detail)
-            
+        )
 
-            if driver.find_elements(By.CSS_SELECTOR, "#availability-status.out-of-stock"):
-                print(f"Keyword: {product} - Product is out of stock")
-                is_out_of_stock +=1
+        end_time = time.time()
+        detail_time = end_time - start_time - list_time
+        detail_page_times.append(detail_time)
+        print(f"Keyword: {product} - Detail Page Response Time: {detail_time * 1000:.2f} ms")
 
-            elif driver.find_elements(By.CSS_SELECTOR, "#availability-status.out-of-stock.ms-1"):
-                print(f"Keyword: {product} - Product is out of stock")
-                is_out_of_stock +=1
-
-            elif driver.find_elements(By.CSS_SELECTOR, "#page-not-found"):
-                print(f"Keyword: {product} - Product Not found")
-                not_found +=1
-
-            print(f"Keyword: {product} - Product detail page response time: {response_time_detail * 1000:.2f} ms")
-
-        except:
-            print(f"Keyword: {product} - timeout.")
-
+        # Check product availability
+        if driver.find_elements(By.CSS_SELECTOR, "#availability-status.out-of-stock") or \
+           driver.find_elements(By.CSS_SELECTOR, "#availability-status.out-of-stock.ms-1"):
+            print(f"Keyword: {product} - Product is out of stock")
+            is_out_of_stock += 1
+        elif driver.find_elements(By.CSS_SELECTOR, "#page-not-found"):
+            print(f"Keyword: {product} - Product not found")
+            not_found += 1
 
     except Exception as e:
         print(f"An error occurred for keyword '{product}': {e}")
+    driver.quit()
 
-    finally:
-        driver.get("https://www.ubuy.ae/en/")
-        driver.set_window_size(1366, 699)
-
-driver.quit()
 
 
 #Calculation
