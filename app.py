@@ -36,8 +36,8 @@ else:
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button('NZ'):
-        selected_location = 'NZ'
+    if st.button('QA'):
+        selected_location = 'QA'
 
 with col2:
     if st.button('KW'):
@@ -140,26 +140,7 @@ keywords = [
     "paper clips", "binder", "folders", "envelopes", "post-it notes",
     "whiteboard", "bulletin board", "pencil sharpener", "calculator", "pencils",
     "pens", "markers", "highlighters", "notepads", "index cards",
-    "sticky notes", "art supplies", "sketchbook", "canvas", "paintbrushes",
-    "paint", "pastels", "colored pencils", "charcoal", "crafting tools",
-    "craft kits", "beading supplies", "jewelry making", "embroidery kit", "sewing kit",
-    "needlework", "knitting supplies", "crochet kit", "paper crafts", "scrapbooking",
-    "calligraphy", "woodworking", "tools", "mechanics", "construction",
-    "hand tools", "power tools", "toolbox", "tool organizer", "safety equipment",
-    "first aid supplies", "work gloves", "workwear", "overalls", "aprons",
-    "tool belts", "work benches", "sawhorses", "ladders", "scaffolding",
-    "painting supplies", "paint sprayer", "drop cloth", "brushes", "rollers",
-    "spray paint", "canvas boards", "art easels", "palettes", "crafters",
-    "home improvement", "gardening", "landscaping", "outdoor decor", "holiday decorations",
-    "seasonal decor", "holiday lights", "outdoor furniture", "patio furniture", "fireplace",
-    "garden decor", "garden tools", "plant pots", "seed starter kits", "fertilizer",
-    "soil", "landscaping fabric", "edging", "decorative rocks", "planters",
-    "birdhouses", "wind chimes", "garden statues", "outdoor rugs", "outdoor cushions",
-    "tableware", "dinnerware", "flatware", "glassware", "barware",
-    "cookbooks", "recipe boxes", "meal kits", "meal planners", "family games",
-    "family activities", "outdoor games", "sporting goods", "fitness accessories", "exercise equipment"
-
-    "wireless bluetooth headphones", "waterproof fitness tracker", "stainless steel tumbler",
+     "wireless bluetooth headphones", "waterproof fitness tracker", "stainless steel tumbler",
     "portable power bank", "noise cancelling earbuds", "smartphone screen protector",
     "usb charging cable", "wireless gaming mouse", "gaming mechanical keyboard",
     "led desk lamp", "smart home thermostat", "robot vacuum cleaner", 
@@ -246,11 +227,11 @@ is_out_of_stock = 0
 
 def run_tests_nz(driver, selected_keywords):
     global list_page_times, detail_page_times, not_found, is_out_of_stock
-    domain = "(NZ)"
+    domain = "(QA)"
 
     for product in selected_keywords:
         try:
-            driver.get("https://www.u-buy.co.nz")
+            driver.get("https://www.ubuy.qa/en/")
             driver.set_window_size(1366, 699)
             search_box = driver.find_element(By.CSS_SELECTOR, ".ds-input")
             search_box.clear()  
@@ -259,7 +240,7 @@ def run_tests_nz(driver, selected_keywords):
             search_box.send_keys(Keys.ENTER)
 
 
-            WebDriverWait(driver, 10).until(
+            WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.product-inner-list:nth-of-type(1) .product-title"))
             )
             #WebDriverWait(driver, 10).until(
@@ -277,7 +258,7 @@ def run_tests_nz(driver, selected_keywords):
 
 
             try:
-                WebDriverWait(driver, 20).until(
+                WebDriverWait(driver, 10).until(
                     EC.any_of(
                         EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.in-stock")),
                         EC.presence_of_element_located((By.CSS_SELECTOR, "#availability-status.out-of-stock")),
@@ -308,7 +289,7 @@ def run_tests_nz(driver, selected_keywords):
         except Exception as e:
             st.write(f"An error occurred for keyword '{product}': {e}")
         finally:
-           driver.get("https://www.u-buy.co.nz")
+           driver.get("https://www.ubuy.qa/en/")
            driver.set_window_size(1366, 699) 
 def run_tests_kw(driver, selected_keywords):
     global list_page_times, detail_page_times, not_found, is_out_of_stock
@@ -455,7 +436,7 @@ def run_tests_uae(driver, selected_keywords):
 def main():
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    if selected_location == 'NZ':
+    if selected_location == 'QA':
         run_tests_nz(driver, selected_keywords)
     elif selected_location == 'KW':
         run_tests_kw(driver, selected_keywords)

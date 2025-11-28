@@ -1,0 +1,26 @@
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+driver = webdriver.Chrome()
+driver.get("")
+
+def get_clean_text(element):
+    text = element.text
+    lines = [line.strip() for line in text.split("\n") if line.strip()]
+    return "\n".join(lines)
+
+delivery_xpath = "//h2[text()='Your Delivery Address']/following-sibling::div"
+billing_xpath = "//h2[text()='Your Billing Address']/following-sibling::div"
+
+delivery_ele = driver.find_element(By.XPATH, delivery_xpath)
+billing_ele = driver.find_element(By.XPATH, billing_xpath)
+
+delivery = get_clean_text(delivery_ele)
+billing = get_clean_text(billing_ele)
+
+print("Delivery:\n", delivery)
+print("Billing:\n", billing)
+
+if delivery == billing:
+    print("✔ Both addresses MATCH")
+else:
+    print("✘ Addresses DO NOT MATCH")
