@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="0.041" timestamp="2025-12-08T14:57:11.558765+05:30" hostname="u64-HP-250-G8-Notebook-PC"><testcase classname="test_first" name="test_sqrt" time="0.001" /><testcase classname="test_first" name="test_square" time="0.001"><failure message="assert (5 * 5) == 45">@pytest.mark.square
+    def test_square():
+        num = 5
+&gt;       assert 5*5 ==45
+E       assert (5 * 5) == 45
+
+test_first.py:10: AssertionError</failure></testcase><testcase classname="test_first" name="testequality" time="0.000"><failure message="assert 14 == 15">@pytest.mark.others
+    def testequality():
+&gt;       assert 14 == 15
+E       assert 14 == 15
+
+test_first.py:13: AssertionError</failure></testcase></testsuite></testsuites>
